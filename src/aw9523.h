@@ -23,6 +23,8 @@
 typedef struct {
     I2C_HandleTypeDef *i2c;
     uint8_t i2c_address;
+    GPIO_TypeDef *rst_port;
+    uint16_t *rst_pin;
 } AW9523_HandleTypeDef;
 
 typedef enum {
@@ -30,6 +32,6 @@ typedef enum {
     AW9523_Err
 } AW9423_StatusTypeDef;
 
-AW9423_StatusTypeDef aw9523_init(AW9523_HandleTypeDef *aw9523_handle, I2C_HandleTypeDef *i2c, uint8_t i2c_address);
+AW9423_StatusTypeDef aw9523_init(AW9523_HandleTypeDef *aw9523_handle, I2C_HandleTypeDef *i2c, uint8_t i2c_address, GPIO_TypeDef *rst_port, uint16_t rst_pin);
 
 #endif /* AW9523_H_ */
