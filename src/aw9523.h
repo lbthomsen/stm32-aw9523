@@ -20,11 +20,13 @@
 
 #include "main.h"
 
+#define AW9523_DBG DBG
+
 typedef struct {
     I2C_HandleTypeDef *i2c;
     uint8_t i2c_address;
     GPIO_TypeDef *rst_port;
-    uint16_t *rst_pin;
+    uint16_t rst_pin;
 } AW9523_HandleTypeDef;
 
 typedef enum {
