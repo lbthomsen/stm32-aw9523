@@ -38,6 +38,16 @@ AW9423_StatusTypeDef aw9523_read(AW9523_HandleTypeDef *aw9523_handle, uint8_t *d
 }
 
 AW9423_StatusTypeDef aw9523_write_register(AW9523_HandleTypeDef *aw9523_handle, uint8_t register_pointer, uint8_t register_value) {
+    AW9523_DBG("aw9523_write_register %d = %d\n", register_pointer, register_value);
+
+    if (aw9523_write(aw9523_handle, &register_pointer, 1) != AW9523_Ok) {
+        return AW9523_Err;
+    }
+
+    return AW9523_Ok;
+}
+
+AW9423_StatusTypeDef aw9523_write_register(AW9523_HandleTypeDef *aw9523_handle, uint8_t register_pointer, uint8_t register_value) {
 
     uint8_t data[2];
     data[0] = register_pointer;
