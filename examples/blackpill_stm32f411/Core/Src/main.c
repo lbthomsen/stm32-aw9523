@@ -140,12 +140,15 @@ int main(void)
 
     }
 
-    //printf("\n");
-
     if (aw9523_init(&aw9523_handle, &hi2c1, AW9523_ADDR, RST_GPIO_Port, RST_Pin) != AW9523_Ok) {
         DBG("Failed\n");
         Error_Handler();
     }
+
+    aw9523_write_register(&aw9523_handle, 0x11, 0x03); // set to 0x00, 0x01, 0x02 or 0x03 to limit max current per pin.
+    aw9523_write_register(&aw9523_handle, 0x12, 0x00);
+    aw9523_write_register(&aw9523_handle, 0x13, 0x80);
+
 
   /* USER CODE END 2 */
 
