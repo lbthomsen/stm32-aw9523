@@ -17,21 +17,21 @@
 
 #include "aw9523.h"
 
-AW9423_StatusTypeDef aw9523_write(AW9523_HandleTypeDef *aw9523_handle, uint8_t *data, uint16_t length) {
+AW9423_StatusTypeDef aw9523_write(AW9523_HandleTypeDef *aw9523_handle, uint8_t addr, uint8_t *data, uint16_t length) {
     AW9523_DBG("aw9523_write %d bytes\n", length);
 
-    if (HAL_I2C_Master_Transmit(aw9523_handle->i2c, (aw9523_handle->i2c_address << 1), data, length, HAL_MAX_DELAY) != HAL_OK) {
-        return AW9523_Err;
+    if (HAL_I2C_Mem_Write(aw9523_handle->i2c, (aw9523_handle->i2c_address << 1), addr, 1, data, length, HAL_MAX_DELAY) != HAL_OK) {
+    	return AW9523_Err;
     }
 
     return AW9523_Ok;
 }
 
-AW9423_StatusTypeDef aw9523_read(AW9523_HandleTypeDef *aw9523_handle, uint8_t *data, uint16_t length) {
+AW9423_StatusTypeDef aw9523_read(AW9523_HandleTypeDef *aw9523_handle, uint8_t addr, uint8_t *data, uint16_t length) {
     AW9523_DBG("aw9523_read %d bytes\n", length);
 
-    if (HAL_I2C_Master_Receive(aw9523_handle->i2c, (aw9523_handle->i2c_address << 1), data, length, HAL_MAX_DELAY) != HAL_OK) {
-        return AW9523_Err;
+    if (HAL_I2C_Mem_Read(aw9523_handle->i2c, (aw9523_handle->i2c_address << 1), addr, 1, data, length, HAL_MAX_DELAY) != HAL_OK) {
+    	return AW9523_Err;
     }
 
     return AW9523_Ok;
@@ -40,7 +40,7 @@ AW9423_StatusTypeDef aw9523_read(AW9523_HandleTypeDef *aw9523_handle, uint8_t *d
 AW9423_StatusTypeDef aw9523_write_register(AW9523_HandleTypeDef *aw9523_handle, uint8_t register_pointer, uint8_t register_value) {
     AW9523_DBG("aw9523_write_register %d = %d\n", register_pointer, register_value);
 
-    if (aw9523_write(aw9523_handle, &register_pointer, 1) != AW9523_Ok) {
+    if (aw9523_write(aw9523_handle, register_pointer, &register_value, 1) != AW9523_Ok) {
         return AW9523_Err;
     }
 
@@ -48,13 +48,9 @@ AW9423_StatusTypeDef aw9523_write_register(AW9523_HandleTypeDef *aw9523_handle, 
 }
 
 AW9423_StatusTypeDef aw9523_read_register(AW9523_HandleTypeDef *aw9523_handle, uint8_t register_pointer, uint8_t *register_value) {
-    AW9523_DBG("aw9523_write_register %d = %d\n", register_pointer, *register_value);
+    AW9523_DBG("aw9523_read_register %d = %d\n", register_pointer, *register_value);
 
-    if (aw9523_write(aw9523_handle, &register_pointer, 1) != AW9523_Ok) {
-        return AW9523_Err;
-    }
-
-    if (aw9523_read(aw9523_handle, register_value, 1) != AW9523_Ok) {
+    if (aw9523_read(aw9523_handle, register_pointer, register_value, 1) != AW9523_Ok) {
         return AW9523_Err;
     }
 

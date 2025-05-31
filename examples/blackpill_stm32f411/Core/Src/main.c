@@ -42,10 +42,33 @@
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 
+TIM_HandleTypeDef htim5;
+
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+
 AW9523_HandleTypeDef aw9523_handle;
+
+const uint8_t led_mapping[5][3] = {
+        { AW9523_DIM4, AW9523_DIM5, AW9523_DIM6 },
+        { AW9523_DIM7, AW9523_DIM8, AW9523_DIM9 },
+        { AW9523_DIM10, AW9523_DIM11, AW9523_DIM0 },
+        { AW9523_DIM1, AW9523_DIM2, AW9523_DIM3 },
+        { AW9523_DIM12, AW9523_DIM13, AW9523_DIM14 }
+};
+
+uint8_t led_values[5][3] = {
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 }
+};
+
+uint32_t tim_cnt;
+uint8_t update_leds;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -53,6 +76,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_TIM5_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -83,6 +107,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
             DBG("Btn Release\n");
         }
     }
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    ++tim_cnt;
+    update_leds = 1;
 }
 
 /* USER CODE END 0 */
@@ -118,9 +147,12 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_USART1_UART_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
 
     DBG("\n\n\n\n--------\nStarting\n");
+
+    HAL_TIM_Base_Start_IT(&htim5);
 
     HAL_Delay(10);
 
@@ -146,26 +178,38 @@ int main(void)
         Error_Handler();
     }
 
-    aw9523_write_register(&aw9523_handle, 0x11, 0x03); // set to 0x00, 0x01, 0x02 or 0x03 to limit max current per pin.
-    aw9523_write_register(&aw9523_handle, 0x12, 0x00);
-    aw9523_write_register(&aw9523_handle, 0x13, 0x80);
-
+    aw9523_write_register(&aw9523_handle, AW9523_CTL, 0x03); // set to 0x00, 0x01, 0x02 or 0x03 to limit max current per pin.
+    aw9523_write_register(&aw9523_handle, AW9523_LP0, 0x00);
+    aw9523_write_register(&aw9523_handle, AW9523_LP1, 0x00);
+    aw9523_write_register(&aw9523_handle, AW9523_DIM14, 0x01);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-    uint32_t now = 0, last_blink = 0;
+    uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
 
     while (1) {
 
-        now = HAL_GetTick();
+        now = uwTick;
 
-        if (now - last_blink >= 500) {
+        if (now >= next_blink) {
             HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-            last_blink = now;
+            next_blink = now + 500;
         }
+
+        if (now >= next_tick) {
+            printf("Tick %lu (loop=%lu tim=%lu)\n", now / 1000, loop_cnt, tim_cnt);
+            loop_cnt = 0;
+            next_tick = now + 1000;
+        }
+
+        if (update_leds) {
+
+        }
+
+        ++loop_cnt;
 
     /* USER CODE END WHILE */
 
@@ -250,6 +294,51 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief TIM5 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM5_Init(void)
+{
+
+  /* USER CODE BEGIN TIM5_Init 0 */
+
+  /* USER CODE END TIM5_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM5_Init 1 */
+
+  /* USER CODE END TIM5_Init 1 */
+  htim5.Instance = TIM5;
+  htim5.Init.Prescaler = 100 - 1;
+  htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim5.Init.Period = 20000 - 1;
+  htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim5.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim5) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim5, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim5, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM5_Init 2 */
+
+  /* USER CODE END TIM5_Init 2 */
 
 }
 

@@ -22,6 +22,40 @@
 
 #define AW9523_DBG DBG
 
+#define AW9523_DEFAULT_ADDR 0x5b
+
+#define AW9523_IP0		0x00
+#define AW9523_IP1      0x01
+#define AW9523_OP0		0x02
+#define AW9523_OP1      0x03
+#define AW9523_CP0      0x04
+#define AW9523_CP1      0x05
+#define AW9523_INT_P0   0x06
+#define AW9523_INT_P1   0x07
+#define AW9523_ID       0x10
+#define AW9523_CTL      0x11
+#define AW9523_LP0      0x12
+#define AW9523_LP1      0x13
+#define AW9523_DIM0     0x20
+#define AW9523_DIM1     0x21
+#define AW9523_DIM2     0x22
+#define AW9523_DIM3     0x23
+#define AW9523_DIM4     0x24
+#define AW9523_DIM5     0x25
+#define AW9523_DIM6     0x26
+#define AW9523_DIM7     0x27
+#define AW9523_DIM8     0x28
+#define AW9523_DIM9     0x29
+#define AW9523_DIM10    0x2a
+#define AW9523_DIM11    0x2b
+#define AW9523_DIM12    0x2c
+#define AW9523_DIM13    0x2d
+#define AW9523_DIM14    0x2e
+#define AW9523_DIM15    0x2f
+#define AW9523_RST      0x7f
+
+
+
 typedef struct {
     I2C_HandleTypeDef *i2c;
     uint8_t i2c_address;
