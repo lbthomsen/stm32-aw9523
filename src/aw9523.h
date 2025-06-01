@@ -5,7 +5,7 @@
  ******************************************************************************
  * @attention
  *
- * Copyright (c) 2024 Lars Boegild Thomsen <lbthomsen@gmail.com>
+ * Copyright (c) 2024-2025 Lars Boegild Thomsen <lbthomsen@gmail.com>
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -20,7 +20,11 @@
 
 #include "main.h"
 
-#define AW9523_DBG DBG
+#ifdef xxxDEBUG
+#define AW9523_DBG(...)    printf(__VA_ARGS__)
+#else
+#define AW9523_DBG(...)
+#endif
 
 #define AW9523_DEFAULT_ADDR 0x5b
 
@@ -53,8 +57,6 @@
 #define AW9523_DIM14    0x2e
 #define AW9523_DIM15    0x2f
 #define AW9523_RST      0x7f
-
-
 
 typedef struct {
     I2C_HandleTypeDef *i2c;
