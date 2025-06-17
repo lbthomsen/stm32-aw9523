@@ -160,6 +160,7 @@ int main(void)
         Error_Handler();
     }
 
+    // Initialize aw9523 in LED drive mode
     aw9523_write_register(&aw9523_handle, AW9523_CTL, 0x03); // set to 0x00, 0x01, 0x02 or 0x03 to limit max current per pin.
     aw9523_write_register(&aw9523_handle, AW9523_LP0, 0x00);
     aw9523_write_register(&aw9523_handle, AW9523_LP1, 0x00);
@@ -169,7 +170,7 @@ int main(void)
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
 
-    uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0, next_led = 0, next_demo_tick = 0;
+    uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0, next_demo_tick = 0;
 
     while (1) {
 

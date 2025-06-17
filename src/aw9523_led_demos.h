@@ -5,7 +5,7 @@
  ******************************************************************************
  * @attention
  *
- * Copyright (c) 2024-2025 Lars Boegild Thomsen <lbthomsen@gmail.com>
+ * Copyright (c) 2025 Lars Boegild Thomsen <lbthomsen@gmail.com>
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -22,6 +22,6 @@
 
 extern const uint8_t led_mapping[5][3];
 
-AW9423_StatusTypeDef aw9523_led_demo_tick(AW9523_HandleTypeDef *aw9523_handle);
+void aw9523_led_demo_tick(AW9523_HandleTypeDef *aw9523_handle);
 
 #endif /* AW9523_LED_DEMOS_H_ */

@@ -5,7 +5,7 @@
  ******************************************************************************
  * @attention
  *
- * Copyright (c) 2024-2025 Lars Boegild Thomsen <lbthomsen@gmail.com>
+ * Copyright (c) 2025 Lars Boegild Thomsen <lbthomsen@gmail.com>
  * All rights reserved.
  *
  * This software is licensed under terms that can be found in the LICENSE file
@@ -94,7 +94,7 @@ static uint8_t demo = 0;
 
 static uint32_t tick_cnt = 0;
 
-AW9423_StatusTypeDef aw9523_led_demo_tick(AW9523_HandleTypeDef *aw9523_handle) {
+void aw9523_led_demo_tick(AW9523_HandleTypeDef *aw9523_handle) {
 
     switch (demo) {
 

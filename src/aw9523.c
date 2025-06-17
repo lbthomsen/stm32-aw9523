@@ -17,6 +17,8 @@
 
 #include "aw9523.h"
 
+// Internal functions
+
 AW9423_StatusTypeDef aw9523_write(AW9523_HandleTypeDef *aw9523_handle, uint8_t addr, uint8_t *data, uint16_t length) {
     AW9523_DBG("aw9523_write %d bytes\n", length);
 
@@ -36,6 +38,8 @@ AW9423_StatusTypeDef aw9523_read(AW9523_HandleTypeDef *aw9523_handle, uint8_t ad
 
     return AW9523_Ok;
 }
+
+// Public functions
 
 AW9423_StatusTypeDef aw9523_write_register(AW9523_HandleTypeDef *aw9523_handle, uint8_t register_pointer, uint8_t register_value) {
     AW9523_DBG("aw9523_write_register %d = %d\n", register_pointer, register_value);
@@ -57,19 +61,6 @@ AW9423_StatusTypeDef aw9523_read_register(AW9523_HandleTypeDef *aw9523_handle, u
     return AW9523_Ok;
 }
 
-//AW9423_StatusTypeDef aw9523_write_register(AW9523_HandleTypeDef *aw9523_handle, uint8_t register_pointer, uint8_t register_value) {
-//
-//    uint8_t data[2];
-//    data[0] = register_pointer;
-//    data[1] = register_value;
-//
-//    if (HAL_I2C_Master_Transmit(aw9523_handle->i2c, (aw9523_handle->i2c_address << 1), data, 2, HAL_MAX_DELAY) != HAL_OK) {
-//        return AW9523_Err;
-//    }
-//
-//    return AW9523_Ok;
-//}
-
 AW9423_StatusTypeDef aw9523_init(AW9523_HandleTypeDef *aw9523_handle, I2C_HandleTypeDef *i2c, uint8_t i2c_address, GPIO_TypeDef *rst_port, uint16_t rst_pin) {
 
     AW9523_DBG("Initializing aw9523\n");
@@ -81,9 +72,9 @@ AW9423_StatusTypeDef aw9523_init(AW9523_HandleTypeDef *aw9523_handle, I2C_Handle
 
     // Reset device
     HAL_GPIO_WritePin(rst_port, rst_pin, GPIO_PIN_RESET);
-    HAL_Delay(1);
+    HAL_Delay(1); // Delay is acceptable here - this will only happen during device start
     HAL_GPIO_WritePin(rst_port, rst_pin, GPIO_PIN_SET);
-    HAL_Delay(10);
+    HAL_Delay(10); // Delay acceptable
 
     uint8_t device_id = 0;
 
