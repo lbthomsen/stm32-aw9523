@@ -32,6 +32,7 @@
 // All the aw9523 i2c registers
 #define AW9523_IP0		0x00
 #define AW9523_IP1      0x01
+#define AW9523_OPS      0x02 // Used for writing both ports in one go
 #define AW9523_OP0		0x02
 #define AW9523_OP1      0x03
 #define AW9523_CP0      0x04
@@ -75,5 +76,7 @@ typedef enum {
 AW9423_StatusTypeDef aw9523_init(AW9523_HandleTypeDef *aw9523_handle, I2C_HandleTypeDef *i2c, uint8_t i2c_address, GPIO_TypeDef *rst_port, uint16_t rst_pin);
 AW9423_StatusTypeDef aw9523_write_register(AW9523_HandleTypeDef *aw9523_handle, uint8_t register_pointer, uint8_t register_value);
 AW9423_StatusTypeDef aw9523_read_register(AW9523_HandleTypeDef *aw9523_handle, uint8_t register_pointer, uint8_t *register_value);
+AW9423_StatusTypeDef aw9523_write(AW9523_HandleTypeDef *aw9523_handle, uint8_t addr, uint8_t *data, uint16_t length);
+AW9423_StatusTypeDef aw9523_read(AW9523_HandleTypeDef *aw9523_handle, uint8_t addr, uint8_t *data, uint16_t length);
 
 #endif /* AW9523_H_ */
